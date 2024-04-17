@@ -52,18 +52,16 @@ async def background():
         for timestamp in reminder_times:
             if timestamp in reminders2:
                 if timestamp < now:
-                    # Simulate user action
-                    user = await client.fetch_user("195485849952059392") # Ensure this ID is appropriate for your use case
-                    print(f'Sent {user} reminder: {reminders2[timestamp]}')
-                    # Ensure the client has appropriate methods like .send() or adjust according to the actual client methods
                     try:
+                        user = await bot.fetch_user("195485849952059392") # Use bot instead of client
+                        print(f'Sent {user} reminder: {reminders2[timestamp]}')
                         await user.send(f'Reminder: {reminders2[timestamp]}')
                     except Exception as e:
                         print(f"Failed to send reminder: {e}")
                     del reminders2[timestamp]
                     reminder_times.remove(timestamp) 
                     break # Exit the loop to wait for the next cycle
-        await asyncio.sleep(1)  # Use asyncio.sleep to yield control back to the event loop
+        await asyncio.sleep(1)
 
 ######### MESSAGE DELETION #########
 async def delete_msg(msg):
