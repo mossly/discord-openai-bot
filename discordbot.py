@@ -6,6 +6,7 @@ from openai import OpenAI
 import os
 from datetime import datetime
 import time
+import threading
 
 reminders = [
     # Put all of your reminders here
@@ -20,18 +21,21 @@ reminders = [
 # In this case let's calculate all of the timestamps
 reminders2 = {datetime.fromisoformat(reminder[0]).timestamp(): reminder[1] for reminder in reminders}
 
-while True:
-    now = time.time()
-    for timestamp, reminder_msg in reminders2.items():
-        if timestamp < now:
-            user = client.fetch_user("Mossly")
-            user.send(reminder_msg)
-            del reminders2[timestamp]
-            # we're not in any hurry, instead of worrying about the consequences of deleting something from the same dictionary we are iterating over
-            # we can just break and wait for the next go around of the while loop to finish checking the remaining reminders
-            break
-    time.sleep(1) # in seconds
+def background():
+    while True:
+        now = time.time()
+        for timestamp, reminder_msg in reminders2.items():
+            if timestamp < now:
+                user = client.fetch_user("Mossly")
+                user.send(reminder_msg)
+                del reminders2[timestamp]
+                # we're not in any hurry, instead of worrying about the consequences of deleting something from the same dictionary we are iterating over
+                # we can just break and wait for the next go around of the while loop to finish checking the remaining reminders
+                break
+        time.sleep(1) # in seconds
 
+b = threading.Thread(name='background', target=background)
+b.start()
 
 oaiclient = OpenAI()
 
