@@ -6,6 +6,7 @@ from openai import OpenAI
 import os
 from datetime import datetime
 import time
+import asyncio
 
 oaiclient = OpenAI()
 
