@@ -10,8 +10,8 @@ import time
 reminders = [
     # Put all of your reminders here
     ('2024-04-17 14:22:00', 'Take out the garbage'),
-    ('2024-04-17 14:23:00', 'Another reminder')
-    ('2024-04-17 14:24:00', 'Another reminder')
+    ('2024-04-17 14:23:00', 'Another reminder'),
+    ('2024-04-17 14:24:00', 'Another reminder'),
     ('2024-04-17 14:25:00', 'Another reminder')
 ]
 
