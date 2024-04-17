@@ -4,7 +4,33 @@ from discord.ext import commands
 import openai
 from openai import OpenAI
 import os
+from datetime import datetime
 import time
+
+reminders = [
+    # Put all of your reminders here
+    ('2024-04-17 14:22:00', 'Take out the garbage'),
+    ('2024-04-17 04:23:00', 'Another reminder')
+    ('2024-04-17 04:24:00', 'Another reminder')
+    ('2024-04-17 04:25:00', 'Another reminder')
+]
+
+# For performance reasons it's best to perform whatever computations we can before we go into our infinite loop
+# In this case let's calculate all of the timestamps
+reminders2 = {datetime.fromisoformat(reminder[0]).timestamp(): reminder[1] for reminder in reminders}
+
+while True:
+    now = time.time()
+    for timestamp, reminder_msg in reminders2.items():
+        if timestamp < now:
+            user = await client.fetch_user("Mossly")
+            await user.send(reminder_msg)
+            del reminders2[timestamp]
+            # we're not in any hurry, instead of worrying about the consequences of deleting something from the same dictionary we are iterating over
+            # we can just break and wait for the next go around of the while loop to finish checking the remaining reminders
+            break
+    time.sleep(1) # in seconds
+
 
 oaiclient = OpenAI()
 
@@ -121,7 +147,9 @@ async def on_ready():
 
 
 ######### COMMANDS ########
-
+@bot.command()
+async def remind(ctx):
+  await ctx.send('Pong!')
 
 @bot.command()
 async def ping(ctx):
@@ -322,7 +350,6 @@ async def on_message(msg_rcvd):
         ))
         break
   await bot.process_commands(msg_rcvd)
-
 
 BOTAPITOKEN = os.getenv("BOT_API_TOKEN")
 
