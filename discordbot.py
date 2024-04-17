@@ -17,23 +17,30 @@ reminders = [
     ('2024-04-17 03:51:00', 'Another reminder')
 ]
 
-# For performance reasons it's best to perform whatever computations we can before we go into our infinite loop
-# In this case let's calculate all of the timestamps
+# Conversion to timestamps
 reminders2 = {datetime.fromisoformat(reminder[0]).timestamp(): reminder[1] for reminder in reminders}
 
+def convert_to_readable(timestamp):
+    """Converts Unix timestamp to human-readable format."""
+    return datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+
 def background():
+    # Using a copy of the keys to safely modify the original dictionary
+    reminder_times = list(reminders2.keys())
+    
     while True:
         now = time.time()
-        for timestamp, reminder_msg in reminders2.items():
-            print(f'Time now: {now} | Reminder time: {timestamp}')
-            if timestamp < now:
-                user = client.fetch_user("Mossly")
-                user.send(reminder_msg)
-                del reminders2[timestamp]
-                # we're not in any hurry, instead of worrying about the consequences of deleting something from the same dictionary we are iterating over
-                # we can just break and wait for the next go around of the while loop to finish checking the remaining reminders
-                break
-        time.sleep(1) # in seconds
+        for timestamp in reminder_times:
+            # Check if the timestamp still exists in reminders2 to avoid KeyError
+            if timestamp in reminders2:
+                print(f'Time now: {convert_to_readable(now)} | Reminder time: {convert_to_readable(timestamp)}')
+                if timestamp < now:
+                    # simulate user action
+                    print(f'Sent reminder: {reminders2[timestamp]}') # Placeholder for user.send(reminder_msg)
+                    del reminders2[timestamp]
+                    reminder_times.remove(timestamp)  # remove the processed timestamp
+                    break  # exit the loop to wait for the next cycle
+        time.sleep(1)  # sleep to prevent busy waiting
 
 b = threading.Thread(name='background', target=background)
 b.start()
