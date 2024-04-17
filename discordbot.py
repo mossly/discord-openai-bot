@@ -6,7 +6,6 @@ from openai import OpenAI
 import os
 from datetime import datetime
 import time
-import threading
 
 oaiclient = OpenAI()
 
@@ -46,27 +45,25 @@ def convert_to_readable(timestamp):
     return datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
 
 async def background():
-    # Using a copy of the keys to safely modify the original dictionary
     reminder_times = list(reminders2.keys())
-    
+     
     while True:
         now = time.time()
         for timestamp in reminder_times:
-            # Check if the timestamp still exists in reminders2 to avoid KeyError
             if timestamp in reminders2:
-                # print(f'Time now: {convert_to_readable(now)} | Reminder time: {convert_to_readable(timestamp)}')
                 if timestamp < now:
-                    # simulate user action
-                    user = await client.fetch_user("195485849952059392")
+                    # Simulate user action
+                    user = await client.fetch_user("195485849952059392") # Ensure this ID is appropriate for your use case
                     print(f'Sent {user} reminder: {reminders2[timestamp]}')
-                    await user.send(f'Reminder: {reminders2[timestamp]}')
+                    # Ensure the client has appropriate methods like .send() or adjust according to the actual client methods
+                    try:
+                        await user.send(f'Reminder: {reminders2[timestamp]}')
+                    except Exception as e:
+                        print(f"Failed to send reminder: {e}")
                     del reminders2[timestamp]
-                    reminder_times.remove(timestamp)  # remove the processed timestamp
-                    break  # exit the loop to wait for the next cycle
-        time.sleep(1)  # sleep to prevent busy waiting
-
-b = threading.Thread(name='background', target=background)
-b.start()
+                    reminder_times.remove(timestamp) 
+                    break # Exit the loop to wait for the next cycle
+        await asyncio.sleep(1)  # Use asyncio.sleep to yield control back to the event loop
 
 ######### MESSAGE DELETION #########
 async def delete_msg(msg):
@@ -158,7 +155,8 @@ async def on_ready():
     if member:
       permissions = member.guild_permissions
       print(f"Bot's permissions in {guild.name}: {permissions}")
-
+    
+  bot.loop.create_task(background())  # Schedule the background task
 
 ######### COMMANDS ########
 @bot.command()
