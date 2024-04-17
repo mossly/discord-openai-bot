@@ -8,6 +8,27 @@ from datetime import datetime
 import time
 import threading
 
+oaiclient = OpenAI()
+
+concise_prompt = "You are a concise and succinct assistant. When you aren't sure, do your best to guess with ballpark figures or heuristic understanding. It is better to oversimplify than to give a qualified answer. It is better to simply say you don't know than to explain nuance about the question or its ambiguities."
+verbose_prompt = "You are detailed & articulate. Include evidence and reasoning in your answers."
+creative_prompt = "You are a creative chatbot. Do your best to suggest original ideas and avoid cliches. Don't use overly poetic language. Be proactive and inventive and drive the conversation forward. Never use the passive voice where you can use the active voice. Do not end your message with a summary."
+
+suffixes = {
+    "-v": ("gpt-4-turbo", verbose_prompt, "GPT-4 Turbo 'Verbose'"),
+    "-3": ("gpt-3.5-turbo", concise_prompt, "GPT-3.5 Turbo 'Concise'"),
+    "-c": ("gpt-4-turbo", creative_prompt, "GPT-4 Turbo 'Creative'")
+}
+
+intents = discord.Intents.default()
+client = discord.Client(intents=intents)
+global bot
+bot = commands.Bot(command_prefix='!', intents=intents)
+
+openai.api_key = os.getenv("OPENAI_API_KEY")
+system_prompt = str(os.getenv("SYSTEM_PROMPT")).strip()
+bot_tag = str(os.getenv("BOT_TAG")).strip()
+
 reminders = [
     # Put all of your reminders here
     ('2024-04-17 03:50:00', 'Take out the garbage'),
@@ -46,28 +67,6 @@ def background():
 
 b = threading.Thread(name='background', target=background)
 b.start()
-
-oaiclient = OpenAI()
-
-concise_prompt = "You are a concise and succinct assistant. When you aren't sure, do your best to guess with ballpark figures or heuristic understanding. It is better to oversimplify than to give a qualified answer. It is better to simply say you don't know than to explain nuance about the question or its ambiguities."
-verbose_prompt = "You are detailed & articulate. Include evidence and reasoning in your answers."
-creative_prompt = "You are a creative chatbot. Do your best to suggest original ideas and avoid cliches. Don't use overly poetic language. Be proactive and inventive and drive the conversation forward. Never use the passive voice where you can use the active voice. Do not end your message with a summary."
-
-suffixes = {
-    "-v": ("gpt-4-turbo", verbose_prompt, "GPT-4 Turbo 'Verbose'"),
-    "-3": ("gpt-3.5-turbo", concise_prompt, "GPT-3.5 Turbo 'Concise'"),
-    "-c": ("gpt-4-turbo", creative_prompt, "GPT-4 Turbo 'Creative'")
-}
-
-intents = discord.Intents.default()
-client = discord.Client(intents=intents)
-global bot
-bot = commands.Bot(command_prefix='!', intents=intents)
-
-openai.api_key = os.getenv("OPENAI_API_KEY")
-system_prompt = str(os.getenv("SYSTEM_PROMPT")).strip()
-bot_tag = str(os.getenv("BOT_TAG")).strip()
-
 
 ######### MESSAGE DELETION #########
 async def delete_msg(msg):
