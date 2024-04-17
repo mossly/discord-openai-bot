@@ -45,7 +45,7 @@ def convert_to_readable(timestamp):
     """Converts Unix timestamp to human-readable format."""
     return datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
 
-def background():
+async def background():
     # Using a copy of the keys to safely modify the original dictionary
     reminder_times = list(reminders2.keys())
     
@@ -57,9 +57,9 @@ def background():
                 # print(f'Time now: {convert_to_readable(now)} | Reminder time: {convert_to_readable(timestamp)}')
                 if timestamp < now:
                     # simulate user action
-                    user = client.fetch_user("195485849952059392")
+                    user = await client.fetch_user("195485849952059392")
                     print(f'Sent {user} reminder: {reminders2[timestamp]}')
-                    user.send(f'Reminder: {reminders2[timestamp]}')
+                    await user.send(f'Reminder: {reminders2[timestamp]}')
                     del reminders2[timestamp]
                     reminder_times.remove(timestamp)  # remove the processed timestamp
                     break  # exit the loop to wait for the next cycle
