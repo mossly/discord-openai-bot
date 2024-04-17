@@ -25,6 +25,7 @@ def background():
     while True:
         now = time.time()
         for timestamp, reminder_msg in reminders2.items():
+            print(f'Time now: {now} | Reminder time: {timestamp}')
             if timestamp < now:
                 user = client.fetch_user("Mossly")
                 user.send(reminder_msg)
