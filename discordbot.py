@@ -10,11 +10,11 @@ import threading
 
 reminders = [
     # Put all of your reminders here
-    ('2024-04-17 03:00:00', 'Take out the garbage'),
-    ('2024-04-17 03:20:00', 'Another reminder'),
-    ('2024-04-17 03:25:00', 'Another reminder'),
-    ('2024-04-17 03:30:00', 'Another reminder'),
-    ('2024-04-17 03:35:00', 'Another reminder')
+    ('2024-04-17 03:50:00', 'Take out the garbage'),
+    ('2024-04-17 03:52:00', 'Another reminder'),
+    ('2024-04-17 03:54:00', 'Another reminder'),
+    ('2024-04-17 03:56:00', 'Another reminder'),
+    ('2024-04-17 03:58:00', 'Another reminder')
 ]
 
 # Conversion to timestamps
