@@ -37,7 +37,8 @@ def background():
                 if timestamp < now:
                     # simulate user action
                     user = client.fetch_user("195485849952059392")
-                    user.send(f'Sent reminder: {reminders2[timestamp]}')
+                    print(f'Sent {user} reminder: {reminders2[timestamp]}')
+                    user.send(f'Reminder: {reminders2[timestamp]}')
                     del reminders2[timestamp]
                     reminder_times.remove(timestamp)  # remove the processed timestamp
                     break  # exit the loop to wait for the next cycle
