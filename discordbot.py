@@ -33,7 +33,7 @@ def background():
         for timestamp in reminder_times:
             # Check if the timestamp still exists in reminders2 to avoid KeyError
             if timestamp in reminders2:
-                print(f'Time now: {convert_to_readable(now)} | Reminder time: {convert_to_readable(timestamp)}')
+                # print(f'Time now: {convert_to_readable(now)} | Reminder time: {convert_to_readable(timestamp)}')
                 if timestamp < now:
                     # simulate user action
                     user = client.fetch_user("195485849952059392")
